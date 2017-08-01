@@ -14,7 +14,7 @@
       char name;
     public:
       Weather();
-      float dew_point(float, float);
+      double dew_point(float, float);
   };
 
 #endif
