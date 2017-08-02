@@ -16,11 +16,7 @@
 
 BME280 bme_sensor;
 
-Weather::Weather() {
-}
-
-void Weather::initialize() {
-  bme_sensor.settings.commInterface = I2C_MODE; 
+Weather::Weather(void) {
   bme_sensor.settings.I2CAddress = 0x76;
   bme_sensor.settings.runMode = 3; 
   bme_sensor.settings.tStandby = 0;

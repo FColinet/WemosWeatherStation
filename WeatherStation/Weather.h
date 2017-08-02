@@ -13,8 +13,7 @@
     private:
       char name;
     public:
-      Weather();
-      void initialize();
+      Weather(void);
       float thermometer();
       float hygrometer();
       float altimeter();
