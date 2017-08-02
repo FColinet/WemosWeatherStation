@@ -1,5 +1,5 @@
 /*
-  Weather.h - Library of tools.
+  Weather.h
   Created by Florent Colinet, August 1, 2017.
 */
 #ifndef Weather_h
@@ -14,7 +14,16 @@
       char name;
     public:
       Weather();
-      double dew_point(float, float);
+      void initialize();
+      float thermometer();
+      float hygrometer();
+      float altimeter();
+      float atmospheric_pressure();
+      float anemometer();
+      float weathercock();
+      float rain_gauge();
+      double dew_point();
   };
 
 #endif
+
