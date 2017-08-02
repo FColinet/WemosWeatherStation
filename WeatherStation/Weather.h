@@ -6,18 +6,14 @@
 
   #define Weather_h
 
-  #include "Arduino.h"
-
   class Weather
   {
-    private:
-      char name;
     public:
       Weather(void);
       float thermometer();
       float hygrometer();
-      float altimeter();
       float atmospheric_pressure();
+      float altimeter();
       float anemometer();
       float weathercock();
       float rain_gauge();

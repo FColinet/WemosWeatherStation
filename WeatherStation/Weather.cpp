@@ -3,16 +3,13 @@
   Created by Florent Colinet, August 1, 2017.
 */
 
-#include "Arduino.h"
 #include "Math.h"
 
-#include "Weather.h"
 #include "WeatherConfig.h"
+#include "Weather.h"
 
-/* Includes for BME280 */
+/* Include for BME280 */
 #include "SparkFunBME280.h"
-#include "Wire.h"
-#include "SPI.h"
 
 BME280 bme_sensor;
 
@@ -21,9 +18,15 @@ Weather::Weather(void) {
   bme_sensor.settings.runMode = 3; 
   bme_sensor.settings.tStandby = 0;
   bme_sensor.settings.filter = 0;
-  bme_sensor.settings.tempOverSample = 1;
-  bme_sensor.settings.pressOverSample = 1;
-  bme_sensor.settings.humidOverSample = 1;
+  if(!WEATHER_THERMOMETER_ENABLED) {
+    bme_sensor.settings.tempOverSample = 1;
+  }
+  if(!WEATHER_HYGROMETER_ENABLED) {
+    bme_sensor.settings.humidOverSample = 1;
+  }
+  if(!WEATHER_ATMOSPHERIC_PRESSURE_ENABLED) {
+    bme_sensor.settings.pressOverSample = 1;
+  }
   bme_sensor.begin();
 }
 
@@ -48,16 +51,6 @@ float Weather::hygrometer() {
 }
 
 /*
- * Return the altitude in meter (m)
- */
-float Weather::altimeter() {
-  if(!WEATHER_ALTIMETER_ENABLED) {
-    return 0;
-  }
-  return bme_sensor.readFloatAltitudeMeters();
-}
-
-/*
  * Return the atmospheric pressure in hectopascal (hPa)
  */
 float Weather::atmospheric_pressure() {
@@ -65,6 +58,16 @@ float Weather::atmospheric_pressure() {
     return 0;
   }
   return bme_sensor.readFloatPressure();
+}
+
+/*
+ * Return the altitude in meter (m)
+ */
+float Weather::altimeter() {
+  if(!WEATHER_ATMOSPHERIC_PRESSURE_ENABLED) {
+    return 0;
+  }
+  return bme_sensor.readFloatAltitudeMeters();
 }
 
 /*
