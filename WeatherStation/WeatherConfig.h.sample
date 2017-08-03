@@ -28,7 +28,7 @@
   */
 
   const int VOLTAGE_PIN = 0; /* A0 */
-  const float VOLTAGE_MULTIPLIER = 0.00496f;
+  const float VOLTAGE_MULTIPLIER = 0.004325; /* for 100k */
 
   /* ================================================================================ */
 
