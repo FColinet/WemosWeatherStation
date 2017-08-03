@@ -8,16 +8,20 @@
 
   class Weather
   {
+    private:
+      int anemometer_count = 0;
+      void anemometer_pulse(void);
     public:
       Weather(void);
-      float thermometer();
-      float hygrometer();
-      float atmospheric_pressure();
-      float altimeter();
-      float anemometer();
-      float weathercock();
-      float rain_gauge();
-      double dew_point();
+      float voltage(void);
+      float thermometer(void);
+      float hygrometer(void);
+      float atmospheric_pressure(void);
+      float altimeter(void);
+      float dew_point(void);
+      float anemometer(void);
+      float weathercock(void);
+      float rain_gauge(void);
   };
 
 #endif

@@ -3,88 +3,117 @@
   Created by Florent Colinet, August 1, 2017.
 */
 
-#include "Math.h"
+#include <Math.h>
+#include <Wire.h>
 
 #include "WeatherConfig.h"
 #include "Weather.h"
 
-/* Include for BME280 */
-#include "SparkFunBME280.h"
+#include <BME280I2C.h>
 
-BME280 bme_sensor;
+BME280I2C bme_sensor;
 
 Weather::Weather(void) {
-  bme_sensor.settings.I2CAddress = 0x76;
-  bme_sensor.settings.runMode = 3; 
-  bme_sensor.settings.tStandby = 0;
-  bme_sensor.settings.filter = 0;
-  if(!WEATHER_THERMOMETER_ENABLED) {
-    bme_sensor.settings.tempOverSample = 1;
+  Serial.begin(9600);
+  while(!Serial) {} // Wait
+
+  if(BME280_ENABLED) {
+    while(!bme_sensor.begin(BME280_SDA, BME280_SCL)){
+      Serial.println("Could not find BME280 sensor!");
+      delay(1000);
+    }
   }
-  if(!WEATHER_HYGROMETER_ENABLED) {
-    bme_sensor.settings.humidOverSample = 1;
+
+  if(ANEMOMETER_ENABLED) {
+    pinMode(ANEMOMETER_PIN, INPUT);
   }
-  if(!WEATHER_ATMOSPHERIC_PRESSURE_ENABLED) {
-    bme_sensor.settings.pressOverSample = 1;
+
+  if(WEATHERCOCK_ENABLED) {
+    pinMode(WEATHERCOCK_PIN_1, INPUT);
+    pinMode(WEATHERCOCK_PIN_2, INPUT);
+    pinMode(WEATHERCOCK_PIN_3, INPUT);
+    pinMode(WEATHERCOCK_PIN_4, INPUT);
+    pinMode(WEATHERCOCK_PIN_5, INPUT);
   }
-  bme_sensor.begin();
+
+  if(RAIN_GAUGE_ENABLED) {
+    pinMode(RAIN_GAUGE_PIN, INPUT);
+  }
+}
+
+/*
+ * Return the voltage in Volt (V)
+ */
+float Weather::voltage() {
+  return analogRead(VOLTAGE_PIN) * VOLTAGE_MULTIPLIER;
 }
 
 /*
  * Return the temperature in Celsius (°C) degrees
  */
 float Weather::thermometer() {
-  if(!WEATHER_THERMOMETER_ENABLED) {
+  if(!BME280_ENABLED) {
     return 0;
   }
-  return bme_sensor.readTempC();
+  return bme_sensor.temp(BME280_METRIC);
 }
 
 /*
  * Return the relative humidity in percent (%)
  */
 float Weather::hygrometer() {
-  if(!WEATHER_HYGROMETER_ENABLED) {
+  if(!BME280_ENABLED) {
     return 0;
   }
-  return bme_sensor.readFloatHumidity();
+  return bme_sensor.hum();
 }
 
 /*
  * Return the atmospheric pressure in hectopascal (hPa)
  */
 float Weather::atmospheric_pressure() {
-  if(!WEATHER_ATMOSPHERIC_PRESSURE_ENABLED) {
+  if(!BME280_ENABLED) {
     return 0;
   }
-  return bme_sensor.readFloatPressure();
+  return bme_sensor.pres(BME280_PRESSURE_UNIT);
 }
 
 /*
  * Return the altitude in meter (m)
  */
 float Weather::altimeter() {
-  if(!WEATHER_ATMOSPHERIC_PRESSURE_ENABLED) {
+  if(!BME280_ENABLED) {
     return 0;
   }
-  return bme_sensor.readFloatAltitudeMeters();
+  return bme_sensor.alt(BME280_METRIC);
+}
+
+/*
+ * Return the dew point in Celsius (°C) degrees
+ */
+float Weather::dew_point() {
+  if(!BME280_ENABLED) {
+    return 0;
+  }
+  return bme_sensor.dew(BME280_METRIC);
 }
 
 /*
  * Return the wind speed in meter by second (m/s)
  */
 float Weather::anemometer() {
-  if(!WEATHER_ANEMOMETER_ENABLED) {
+  if(!ANEMOMETER_ENABLED) {
     return 0;
   }
-  return 1;
+  attachInterrupt(digitalPinToInterrupt(ANEMOMETER_PIN), reinterpret_cast<void (*)()>(&Weather::anemometer_pulse), LOW);
+  return anemometer_count;
 }
 
 /*
  * Return the wind direction in degrees (°) : North at 0°
  */
 float Weather::weathercock() {
-  if(!WEATHER_WEATHERCOCK_ENABLED) {
+  if(!WEATHERCOCK_ENABLED) {
     return 0;
   }
   return 1;
@@ -94,29 +123,16 @@ float Weather::weathercock() {
  * Return the rain quantity in millimeter (mm)
  */
 float Weather::rain_gauge() {
-  if(!WEATHER_RAIN_GAUGE_ENABLED) {
+  if(!RAIN_GAUGE_ENABLED) {
     return 0;
   }
   return 1;
 }
 
 /*
- * Return the dew point in Celsius (°C) degrees
+ * 
  */
-double Weather::dew_point() {
-  if(!WEATHER_THERMOMETER_ENABLED || !WEATHER_HYGROMETER_ENABLED) {
-    return 0;
-  }
-  /*
-   * T  : temperature in Celsius (°C) degrees
-   * Rh : Relative Humidity in percent (%)
-   * B  : Intermediate value (no units)
-   * D  : Dewpoint in Celsius (°C) degrees
-   */
-  float T = thermometer();
-  float Rh = hygrometer();
-  double B = (log(Rh / 100) + ((17.27 * T) / (237.3 + T))) / 17.27;
-  double D = (237.3 * B) / (1 - B);
-  return D;
+void Weather::anemometer_pulse() {
+  anemometer_count++;
 }
 
