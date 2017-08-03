@@ -11,16 +11,47 @@
 
 #include <BME280I2C.h>
 
+#include <ESP8266WiFi.h>
+
 BME280I2C bme_sensor;
 
 Weather::Weather(void) {
+}
+
+void Weather::initialize() {
   Serial.begin(9600);
-  while(!Serial) {} // Wait
+  while(!Serial) {
+    ;
+  } // Wait
+
+  Serial.println("");
+  Serial.println(WEATHER_STATION_NAME);
+  Serial.println("");
+
+  WiFi.begin(NETWORK_SSID, NETWORK_PASSWORD);
+
+  while(WiFi.status() != WL_CONNECTED) {
+    delay(500);
+  }
+
+  Serial.print("MAC address    ");
+  Serial.println(WiFi.macAddress());
+  Serial.print("IP address     ");
+  Serial.println(WiFi.localIP());
+
+  Serial.print("BME280         ");
+  Serial.println(BME280_ENABLED?"Enabled":"Disabled");
+  Serial.print("Anemometer     ");
+  Serial.println(ANEMOMETER_ENABLED?"Enabled":"Disabled");
+  Serial.print("Weathercock    ");
+  Serial.println(WEATHERCOCK_ENABLED?"Enabled":"Disabled");
+  Serial.print("Rain gauge     ");
+  Serial.println(RAIN_GAUGE_ENABLED?"Enabled":"Disabled");
 
   if(BME280_ENABLED) {
     while(!bme_sensor.begin(BME280_SDA, BME280_SCL)){
       Serial.println("Could not find BME280 sensor!");
-      delay(1000);
+      delay(500);
     }
   }
 
@@ -39,6 +70,9 @@ Weather::Weather(void) {
   if(RAIN_GAUGE_ENABLED) {
     pinMode(RAIN_GAUGE_PIN, INPUT);
   }
+
+  Serial.println("");
+
 }
 
 /*

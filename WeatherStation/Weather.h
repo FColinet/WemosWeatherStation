@@ -13,6 +13,7 @@
       void anemometer_pulse(void);
     public:
       Weather(void);
+      void initialize(void);
       float voltage(void);
       float thermometer(void);
       float hygrometer(void);
