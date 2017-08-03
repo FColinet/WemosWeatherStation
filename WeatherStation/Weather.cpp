@@ -28,14 +28,14 @@ void Weather::initialize() {
   Serial.println(WEATHER_STATION_NAME);
   Serial.println("");
 
+  Serial.print("MAC address    ");
+  Serial.println(WiFi.macAddress());
+
   WiFi.begin(NETWORK_SSID, NETWORK_PASSWORD);
 
   while(WiFi.status() != WL_CONNECTED) {
     delay(500);
   }
-
-  Serial.print("MAC address    ");
-  Serial.println(WiFi.macAddress());
   Serial.print("IP address     ");
   Serial.println(WiFi.localIP());
 
