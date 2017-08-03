@@ -1,18 +1,18 @@
 /*
-  Weather.h
+  WeatherStation.h
   Created by Florent Colinet, August 1, 2017.
 */
-#ifndef Weather_h
+#ifndef WeatherStation_h
 
-  #define Weather_h
+  #define WeatherStation_h
 
-  class Weather
+  class WeatherStation
   {
     private:
       int anemometer_count = 0;
       void anemometer_pulse(void);
     public:
-      Weather(void);
+      WeatherStation(void);
       void initialize(void);
       float voltage(void);
       int32_t wifi_strength(void);

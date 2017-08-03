@@ -1,13 +1,13 @@
 /*
-  Weather.cpp
+  WeatherStation.cpp
   Created by Florent Colinet, August 1, 2017.
 */
 
 #include <Math.h>
 #include <Wire.h>
 
-#include "WeatherConfig.h"
-#include "Weather.h"
+#include "WeatherStationConfig.h"
+#include "WeatherStation.h"
 
 #include <BME280I2C.h>
 
@@ -15,10 +15,10 @@
 
 BME280I2C bme_sensor;
 
-Weather::Weather(void) {
+WeatherStation::WeatherStation(void) {
 }
 
-void Weather::initialize() {
+void WeatherStation::initialize() {
   Serial.begin(9600);
   while(!Serial) {
     ;
@@ -81,21 +81,21 @@ void Weather::initialize() {
 /*
  * Return the voltage in Volt (V)
  */
-float Weather::voltage() {
+float WeatherStation::voltage() {
   return analogRead(VOLTAGE_PIN) * VOLTAGE_MULTIPLIER;
 }
 
 /*
  * Return the RSSI in dBm
  */
-int32_t Weather::wifi_strength() {
+int32_t WeatherStation::wifi_strength() {
   return WiFi.RSSI();
 }
 
 /*
  * Return the temperature in Celsius (°C) degrees
  */
-float Weather::thermometer() {
+float WeatherStation::thermometer() {
   if(!BME280_ENABLED) {
     return 0;
   }
@@ -105,7 +105,7 @@ float Weather::thermometer() {
 /*
  * Return the relative humidity in percent (%)
  */
-float Weather::hygrometer() {
+float WeatherStation::hygrometer() {
   if(!BME280_ENABLED) {
     return 0;
   }
@@ -115,7 +115,7 @@ float Weather::hygrometer() {
 /*
  * Return the atmospheric pressure in hectopascal (hPa)
  */
-float Weather::atmospheric_pressure() {
+float WeatherStation::atmospheric_pressure() {
   if(!BME280_ENABLED) {
     return 0;
   }
@@ -125,7 +125,7 @@ float Weather::atmospheric_pressure() {
 /*
  * Return the altitude in meter (m)
  */
-float Weather::altimeter() {
+float WeatherStation::altimeter() {
   if(!BME280_ENABLED) {
     return 0;
   }
@@ -135,7 +135,7 @@ float Weather::altimeter() {
 /*
  * Return the dew point in Celsius (°C) degrees
  */
-float Weather::dew_point() {
+float WeatherStation::dew_point() {
   if(!BME280_ENABLED) {
     return 0;
   }
@@ -145,18 +145,18 @@ float Weather::dew_point() {
 /*
  * Return the wind speed in meter by second (m/s)
  */
-float Weather::anemometer() {
+float WeatherStation::anemometer() {
   if(!ANEMOMETER_ENABLED) {
     return 0;
   }
-  attachInterrupt(digitalPinToInterrupt(ANEMOMETER_PIN), reinterpret_cast<void (*)()>(&Weather::anemometer_pulse), LOW);
+  attachInterrupt(digitalPinToInterrupt(ANEMOMETER_PIN), reinterpret_cast<void (*)()>(&WeatherStation::anemometer_pulse), LOW);
   return anemometer_count;
 }
 
 /*
  * Return the wind direction in degrees (°) : North at 0°
  */
-float Weather::weathercock() {
+float WeatherStation::weathercock() {
   if(!WEATHERCOCK_ENABLED) {
     return 0;
   }
@@ -166,7 +166,7 @@ float Weather::weathercock() {
 /*
  * Return the rain quantity in millimeter (mm)
  */
-float Weather::rain_gauge() {
+float WeatherStation::rain_gauge() {
   if(!RAIN_GAUGE_ENABLED) {
     return 0;
   }
@@ -176,7 +176,7 @@ float Weather::rain_gauge() {
 /*
  * 
  */
-void Weather::anemometer_pulse() {
+void WeatherStation::anemometer_pulse() {
   anemometer_count++;
 }
 

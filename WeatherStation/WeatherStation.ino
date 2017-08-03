@@ -1,33 +1,33 @@
-#include "Weather.h"
+#include "WeatherStation.h"
 
-Weather weather;
+WeatherStation ws;
 
 void setup() {
-  weather.initialize();
+  ws.initialize();
 
   Serial.print("Temperature    ");
-  Serial.println(weather.thermometer());
+  Serial.println(ws.thermometer());
   Serial.print("Humidity       ");
-  Serial.println(weather.hygrometer());
+  Serial.println(ws.hygrometer());
   Serial.print("Pressure       ");
-  Serial.println(weather.atmospheric_pressure());
+  Serial.println(ws.atmospheric_pressure());
   Serial.print("Altitude       ");
-  Serial.println(weather.altimeter());
+  Serial.println(ws.altimeter());
   Serial.print("Dew point      ");
-  Serial.println(weather.dew_point());
+  Serial.println(ws.dew_point());
   Serial.print("Wind speed     ");
-  Serial.println(weather.anemometer());
+  Serial.println(ws.anemometer());
   Serial.print("Wind direction ");
-  Serial.println(weather.weathercock());
+  Serial.println(ws.weathercock());
   Serial.print("Rain quantity  ");
-  Serial.println(weather.rain_gauge());
+  Serial.println(ws.rain_gauge());
 }
 
 void loop() {
   Serial.print("Voltage        ");
-  Serial.println(weather.voltage());
+  Serial.println(ws.voltage());
   Serial.print("Wifi strength  ");
-  Serial.println(weather.wifi_strength());
+  Serial.println(ws.wifi_strength());
   delay(1000);
 }
 

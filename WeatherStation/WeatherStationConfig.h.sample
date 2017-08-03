@@ -1,10 +1,10 @@
 /*
-  WeatherConfig.h
+  WeatherStationConfig.h
   Created by Florent Colinet, August 2, 2017.
 */
-#ifndef WeatherConfig_h
+#ifndef WeatherStationConfig_h
 
-  #define WeatherConfig_h
+  #define WeatherStationConfig_h
   
   /*
    * Weather station settings
