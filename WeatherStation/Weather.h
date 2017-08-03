@@ -15,6 +15,7 @@
       Weather(void);
       void initialize(void);
       float voltage(void);
+      int32_t wifi_strength(void);
       float thermometer(void);
       float hygrometer(void);
       float atmospheric_pressure(void);

@@ -5,8 +5,6 @@ Weather weather;
 void setup() {
   weather.initialize();
 
-  Serial.print("Voltage        ");
-  Serial.println(weather.voltage());
   Serial.print("Temperature    ");
   Serial.println(weather.thermometer());
   Serial.print("Humidity       ");
@@ -26,5 +24,10 @@ void setup() {
 }
 
 void loop() {
+  Serial.print("Voltage        ");
+  Serial.println(weather.voltage());
+  Serial.print("Wifi strength  ");
+  Serial.println(weather.wifi_strength());
+  delay(1000);
 }
 

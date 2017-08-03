@@ -38,6 +38,9 @@ void Weather::initialize() {
   }
   Serial.print("IP address     ");
   Serial.println(WiFi.localIP());
+  Serial.print("RSSI           ");
+  Serial.print(WiFi.RSSI());
+  Serial.println(" dBm");
 
   Serial.print("BME280         ");
   Serial.println(BME280_ENABLED?"Enabled":"Disabled");
@@ -80,6 +83,13 @@ void Weather::initialize() {
  */
 float Weather::voltage() {
   return analogRead(VOLTAGE_PIN) * VOLTAGE_MULTIPLIER;
+}
+
+/*
+ * Return the RSSI in dBm
+ */
+int32_t Weather::wifi_strength() {
+  return WiFi.RSSI();
 }
 
 /*
