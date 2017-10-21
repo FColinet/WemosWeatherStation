@@ -6,6 +6,11 @@
 
   #define WeatherStation_h
 
+  #include <Math.h>
+  #include <Wire.h>
+
+  #include <BME280I2C.h>
+
   class WeatherStation
   {
     private:
@@ -14,8 +19,10 @@
     public:
       WeatherStation(void);
       void initialize(void);
+      String getName(void);
+      String getVersion(void);
+
       float voltage(void);
-      int32_t wifi_strength(void);
       float thermometer(void);
       float hygrometer(void);
       float atmospheric_pressure(void);

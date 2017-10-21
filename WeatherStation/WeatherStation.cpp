@@ -2,16 +2,8 @@
   WeatherStation.cpp
   Created by Florent Colinet, August 1, 2017.
 */
-
-#include <Math.h>
-#include <Wire.h>
-
-#include "WeatherStationConfig.h"
 #include "WeatherStation.h"
-
-#include <BME280I2C.h>
-
-#include <ESP8266WiFi.h>
+#include "WeatherStationConfig.h"
 
 BME280I2C bme_sensor;
 
@@ -19,28 +11,11 @@ WeatherStation::WeatherStation(void) {
 }
 
 void WeatherStation::initialize() {
-  Serial.begin(9600);
-  while(!Serial) {
-    ;
-  } // Wait
-
   Serial.println("");
   Serial.println(WEATHER_STATION_NAME);
   Serial.println("");
 
-  Serial.print("MAC address    ");
-  Serial.println(WiFi.macAddress());
-
-  WiFi.begin(NETWORK_SSID, NETWORK_PASSWORD);
-
-  while(WiFi.status() != WL_CONNECTED) {
-    delay(500);
-  }
-  Serial.print("IP address     ");
-  Serial.println(WiFi.localIP());
-  Serial.print("RSSI           ");
-  Serial.print(WiFi.RSSI());
-  Serial.println(" dBm");
+  /* ================================================================================ */
 
   Serial.print("BME280         ");
   Serial.println(BME280_ENABLED?"Enabled":"Disabled");
@@ -79,17 +54,24 @@ void WeatherStation::initialize() {
 }
 
 /*
+ * Return the name
+ */
+String WeatherStation::getName() {
+  return WEATHER_STATION_NAME;
+}
+
+/*
+ * Return the version
+ */
+String WeatherStation::getVersion() {
+  return WEATHER_STATION_VERSION;
+}
+
+/*
  * Return the voltage in Volt (V)
  */
 float WeatherStation::voltage() {
   return analogRead(VOLTAGE_PIN) * VOLTAGE_MULTIPLIER;
-}
-
-/*
- * Return the RSSI in dBm
- */
-int32_t WeatherStation::wifi_strength() {
-  return WiFi.RSSI();
 }
 
 /*
@@ -170,7 +152,8 @@ float WeatherStation::rain_gauge() {
   if(!RAIN_GAUGE_ENABLED) {
     return 0;
   }
-  return 1;
+  int val = digitalRead(RAIN_GAUGE_PIN);
+  return val;
 }
 
 /*
