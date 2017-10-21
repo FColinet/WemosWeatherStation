@@ -1,0 +1,22 @@
+/*
+  WebServerConfig.h
+  Created by Florent Colinet, Octeber 21, 2017.
+*/
+#ifndef WebServerConfig_h
+
+  #define WebServerConfig_h
+
+  /*
+  * Network settings
+  */
+
+  const char* NETWORK_SSID = "SSID";
+  const char* NETWORK_PASSWORD = "PASSWORD";
+
+  /*
+  * Web server settings
+  */
+  const int WEBSERVER_PORT = 80;
+
+#endif
+
