@@ -11,7 +11,6 @@
    */
 
   const char* WEATHER_STATION_NAME = "My weather station";
-  const char* WEATHER_STATION_VERSION = "1.0.0";
 
   /* ================================================================================ */
 
@@ -31,8 +30,7 @@
   const bool BME280_ENABLED = false;
   const int BME280_SDA = 4; /* D2 */
   const int BME280_SCL = 5; /* D1 */
-  const uint8_t BME280_PRESSURE_UNIT = 0x1; /* 0x0 = Pa (B000), 0x1 = hPa (B001), 0x2 = Hg (B010), 0x3 = atm (B011), 0x4 = bar (B100), 0x5 = torr (B101), 0x6 = N/m^2 (B110), 0x7 = psi (B111) */
-  const bool BME280_METRIC = true;
+  const float BME280_SEA_LEVEL_PRESSURE = 101325; // in Pa
 
   /* ================================================================================ */
 

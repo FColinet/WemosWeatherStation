@@ -5,6 +5,9 @@
 #include "WeatherStation.h"
 #include "WeatherStationConfig.h"
 
+#include <Math.h>
+#include <Wire.h>
+
 BME280I2C bme_sensor;
 
 WeatherStation::WeatherStation(void) {
@@ -27,7 +30,8 @@ void WeatherStation::initialize() {
   Serial.println(RAIN_GAUGE_ENABLED?"Enabled":"Disabled");
 
   if(BME280_ENABLED) {
-    while(!bme_sensor.begin(BME280_SDA, BME280_SCL)){
+    Wire.begin(BME280_SDA, BME280_SCL);
+    while(!bme_sensor.begin()){
       Serial.println("Could not find BME280 sensor!");
       delay(500);
     }
@@ -64,7 +68,7 @@ String WeatherStation::getName() {
  * Return the version
  */
 String WeatherStation::getVersion() {
-  return WEATHER_STATION_VERSION;
+  return Version;
 }
 
 /*
@@ -77,11 +81,45 @@ float WeatherStation::voltage() {
 /*
  * Return the temperature in Celsius (°C) degrees
  */
-float WeatherStation::thermometer() {
+float WeatherStation::thermometer_c() {
   if(!BME280_ENABLED) {
     return 0;
   }
-  return bme_sensor.temp(BME280_METRIC);
+  return bme_sensor.temp(BME280::TempUnit_Celcius);
+}
+
+/*
+ * Return the temperature in Fahrenheit (°F) degrees
+ */
+float WeatherStation::thermometer_f() {
+  if(!BME280_ENABLED) {
+    return 0;
+  }
+  return bme_sensor.temp(BME280::TempUnit_Fahrenheit);
+}
+
+/*
+ * Return the dew point in Celsius (°C) degrees
+ */
+float WeatherStation::dew_point_c() {
+  if(!BME280_ENABLED) {
+    return 0;
+  }
+  float temp = bme_sensor.temp(BME280::TempUnit_Celcius);
+  float hum = bme_sensor.hum();
+  return EnvironmentCalculations::DewPoint(temp, hum, true);
+}
+
+/*
+ * Return the dew point in Fahrenheit (°F) degrees
+ */
+float WeatherStation::dew_point_f() {
+  if(!BME280_ENABLED) {
+    return 0;
+  }
+  float temp = bme_sensor.temp(BME280::TempUnit_Fahrenheit);
+  float hum = bme_sensor.hum();
+  return EnvironmentCalculations::DewPoint(temp, hum, false);
 }
 
 /*
@@ -101,27 +139,27 @@ float WeatherStation::atmospheric_pressure() {
   if(!BME280_ENABLED) {
     return 0;
   }
-  return bme_sensor.pres(BME280_PRESSURE_UNIT);
+  return bme_sensor.pres(BME280::PresUnit_hPa);
 }
 
-/*
- * Return the altitude in meter (m)
+/**
+ *  \brief Return the altitude in meters (m)
  */
-float WeatherStation::altimeter() {
+float WeatherStation::altimeter_m() {
   if(!BME280_ENABLED) {
     return 0;
   }
-  return bme_sensor.alt(BME280_METRIC);
+  return EnvironmentCalculations::Altitude(bme_sensor.pres(), true, BME280_SEA_LEVEL_PRESSURE);
 }
 
-/*
- * Return the dew point in Celsius (°C) degrees
+/**
+ *  \brief Return the altitude in feet (ft)
  */
-float WeatherStation::dew_point() {
+float WeatherStation::altimeter_ft() {
   if(!BME280_ENABLED) {
     return 0;
   }
-  return bme_sensor.dew(BME280_METRIC);
+  return EnvironmentCalculations::Altitude(bme_sensor.pres(), false, BME280_SEA_LEVEL_PRESSURE);
 }
 
 /*
@@ -136,7 +174,7 @@ float WeatherStation::anemometer() {
 }
 
 /*
- * Return the wind direction in degrees (°) : North at 0°
+ * Return the wind direction in degrees (Â°) : North at 0Â°
  */
 float WeatherStation::weathercock() {
   if(!WEATHERCOCK_ENABLED) {
@@ -162,4 +200,5 @@ float WeatherStation::rain_gauge() {
 void WeatherStation::anemometer_pulse() {
   anemometer_count++;
 }
+
 

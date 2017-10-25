@@ -58,13 +58,22 @@ void handleWeather() {
   String message = "{";
   message += "\"name\":\"" + ws.getName() + "\",";
   message += "\"version\":\"" + ws.getVersion() + "\",";
-  message += "\"station_battery\":" + String(ws.voltage()) + ",";
+  message += "\"battery\":" + String(ws.voltage()) + ",";
   message += "\"weather\":{";
-  message += "\"temperature\":" + String(ws.thermometer()) + ",";
-  message += "\"dew_point\":" + String(ws.dew_point()) + ",";
+  message += "\"temperature\":{";
+  message += "\"celcius\":" + String(ws.thermometer_c()) + ",";
+  message += "\"fahrenheit\":" + String(ws.thermometer_f());
+  message += "},";
+  message += "\"dew_point\":{";
+  message += "\"celcius\":" + String(ws.dew_point_c()) + ",";
+  message += "\"fahrenheit\":" + String(ws.dew_point_f());
+  message += "},";
   message += "\"hygrometry\":" + String(ws.hygrometer()) + ",";
   message += "\"atmospheric_pressure\":" + String(ws.atmospheric_pressure()) + ",";
-  message += "\"altitude\":" + String(ws.altimeter()) + ",";
+  message += "\"altitude\":{";
+  message += "\"meters\":" + String(ws.altimeter_m()) + ",";
+  message += "\"feet\":" + String(ws.altimeter_ft());
+  message += "},";
   message += "\"wind_speed\":" + String(ws.anemometer()) + ",";
   message += "\"wind_direction\":" + String(ws.weathercock()) + ",";
   message += "\"pluviometry\":" + String(ws.rain_gauge());
@@ -86,3 +95,4 @@ void handleNotFound() {
   }
   webserver.send(404, "text/plain", message);
 }
+
