@@ -1,7 +1,11 @@
-/*
-  bme280.h
-  Created by Florent Colinet, October 24, 2017.
-*/
+/**
+ * \file bme280.h
+ * \brief BME280 simple drivers
+ * \author Florent Colinet
+ * \version 1.0
+ * \date October 24, 2017
+ *
+ */
 #ifndef __BME280_H__
 
   #define __BME280_H__
@@ -78,12 +82,15 @@
 			void readTemperature(void);
 			void readPressure(void);
 			void readHumidity(void);
+			void readAltitude(void);
 			void readSensorCoefficients(void);
 
 			float tempOffset;			// stores the temp offset
+			float seaLevel;				// stores the sea level
 			float temperature;    // stores temperature value
 			float humidity;       // stores humidity value
 			float pressure;       // stores pressure value
+			float altitude;       // stores altitude value
 
 			// functions used for sensor communications
 			void write8(byte reg, byte value);
@@ -93,6 +100,7 @@
 			int16_t readS16(byte reg);
 			uint16_t read16_LE(byte reg);
 			int16_t readS16_LE(byte reg);
+
 			uint8_t _i2cAddr;
 			int32_t _sensorID;
 			int32_t t_fine;
@@ -104,6 +112,7 @@
 			bool begin(void);
 
 			void setTempOffset(float);
+			void setSeaLevel(float);
 
 			void readSensor(void);
 
@@ -114,6 +123,8 @@
 
 			float getPressure_HP(void);
 			float getPressure_MB(void);
+
+			float getAltitude(void);
 
   };
 

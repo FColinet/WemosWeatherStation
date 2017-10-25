@@ -1,7 +1,11 @@
-/*
- bme280.cpp
- Created by Florent Colinet, October 24, 2017.
-*/
+/**
+ * \file bme280.cpp
+ * \brief BME280 simple drivers
+ * \author Florent Colinet
+ * \version 1.0
+ * \date October 24, 2017
+ *
+ */
 #include "bme280.h"
 
 #include <math.h>
@@ -17,6 +21,12 @@ bme280::bme280(uint8_t addr) {
 	initialize(addr);
 }
 
+/**
+ *  \fn public bool begin (void)
+ *  \brief 
+ *
+ *  \return Boolean
+ */
 bool bme280::begin(void) {
 	Wire.begin();
 
@@ -35,10 +45,15 @@ void bme280::setTempOffset(float tOffset) {
 	tempOffset = tOffset;
 }
 
+void bme280::setSeaLevel(float sLevel) {
+	seaLevel = sLevel;
+}
+
 void bme280::readSensor(void) {
 	readTemperature();
 	readHumidity();
 	readPressure();
+	readAltitude();
 }
 
 float bme280::getTemperature_C(void) {
@@ -61,16 +76,34 @@ float bme280::getPressure_MB(void) {
 	return pressure / 100.0F;
 }
 
+/**
+ *  \fn public float getAltitude (void)
+ *  \brief Returns the altitude
+ *
+ *  \return Float Altitude in meter
+ */
+float bme280::getAltitude(void) {
+	return altiture;
+}
+
 /* PRIVATE */
 
+/**
+ *  \brief Initialize internal variables
+ */
 void bme280::initialize(uint8_t addr) {
 	_i2cAddr = addr;
 	tempOffset = 0.0;
+	seaLevel = 1013.25F;
 	temperature = 0.0;
 	humidity = 0.0;
 	pressure = 0.0;
+	altitude = 0.0;
 }
 
+/**
+ *  \brief Reads the temperature from the sensor
+ */
 void bme280::readTemperature(void) {
 	int32_t tmp1, tmp2;
 
@@ -87,6 +120,9 @@ void bme280::readTemperature(void) {
 	temperature = temperature + tempOffset;
 }
 
+/**
+ *  \brief Reads the pressure from the sensor
+ */
 void bme280::readPressure(void) {
 	int64_t tmp1, tmp2, p;
 
@@ -114,6 +150,9 @@ void bme280::readPressure(void) {
 	pressure = (float)p / 256;
 }
 
+/**
+ *  \brief Reads the humidity from the sensor
+ */
 void bme280::readHumidity(void) {
 	int32_t adc_H = read16(BME280_REGISTER_HUMIDDATA);
 	int32_t v_x1_u32r;
@@ -133,6 +172,19 @@ void bme280::readHumidity(void) {
 	humidity = h / 1024.0;
 }
 
+/**
+ *  \brief Calculates the altitude
+ *
+ *  Calculates the altitude (in meters) from the specified atmospheric
+ *  pressure (in mB), and sea-level pressure (in hPa).
+ */
+void bme280::readAltitude(void) {
+	altiture = 44330.0 * (1.0 - pow(getPressure_MB() / seaLevel, 0.1903));
+}
+
+/**
+ *  \brief Reads the factory-set coefficients
+ */
 void bme280::readSensorCoefficients(void) {
 	cal_data.dig_T1 = read16_LE(BME280_DIG_T1_REG);
 	cal_data.dig_T2 = readS16_LE(BME280_DIG_T2_REG);
@@ -156,6 +208,9 @@ void bme280::readSensorCoefficients(void) {
 
 /* WIRE COMMUNICATION */
 
+/**
+ *  \brief Writes a 8 bit value over I2C
+ */
 void bme280::write8(byte reg, byte value) {
 	Wire.beginTransmission((uint8_t)_i2cAddr);
 	Wire.write((uint8_t)reg);
@@ -163,6 +218,9 @@ void bme280::write8(byte reg, byte value) {
 	Wire.endTransmission();
 }
 
+/**
+ *  \brief Reads a 8 bit value over I2C
+ */
 uint8_t bme280::read8(byte reg) {
 	uint8_t value;
 	Wire.beginTransmission((uint8_t)_i2cAddr);
@@ -173,14 +231,23 @@ uint8_t bme280::read8(byte reg) {
 	return value;
 }
 
+/**
+ *  \brief Reads a signed 16 bit value over I2C
+ */
 int16_t bme280::readS16(byte reg) {
 	return (int16_t)read16(reg);
 }
 
+/**
+ *  \brief Reads a signed little endian 16 bit value over I2C
+ */
 int16_t bme280::readS16_LE(byte reg) {
 	return (int16_t)read16_LE(reg);
 }
 
+/**
+ *  \brief Reads a 16 bit value over I2C
+ */
 uint16_t bme280::read16(byte reg) {
 	uint16_t value;
 	Wire.beginTransmission((uint8_t)_i2cAddr);
@@ -191,11 +258,17 @@ uint16_t bme280::read16(byte reg) {
 	return value;
 }
 
+/**
+ *  \brief Reads a little endian 16 bit value over I2C
+ */
 uint16_t bme280::read16_LE(byte reg) {
 	uint16_t temp = read16(reg);
 	return (temp >> 8) | (temp << 8);
 }
 
+/**
+ *  \brief Reads a 24 bit value over I2C
+ */
 uint32_t bme280::read24(byte reg) {
 	uint32_t value;
 	Wire.beginTransmission((uint8_t)_i2cAddr);
