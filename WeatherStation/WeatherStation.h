@@ -6,8 +6,8 @@
 
   #define WeatherStation_h
 
-  #include <EnvironmentCalculations.h>
-  #include <BME280I2C.h>
+  #include <Adafruit_Sensor.h>
+  #include <Adafruit_BME280.h>
 
   class WeatherStation
   {
@@ -24,18 +24,15 @@
 
       float voltage(void);
 
-      float thermometer_c(void);
-      float thermometer_f(void);
+      float thermometer(void);
 
-      float dew_point_c(void);
-      float dew_point_f(void);
+      float dew_point(void);
 
       float hygrometer(void);
 
       float atmospheric_pressure(void);
 
-      float altimeter_m(void);
-      float altimeter_ft(void);
+      float altimeter(void);
 
       float anemometer(void);
       float weathercock(void);

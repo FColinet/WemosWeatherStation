@@ -8,7 +8,7 @@
 #include <Math.h>
 #include <Wire.h>
 
-BME280I2C bme_sensor;
+Adafruit_BME280 bme_sensor;
 
 WeatherStation::WeatherStation(void) {
 }
@@ -81,45 +81,25 @@ float WeatherStation::voltage() {
 /*
  * Return the temperature in Celsius (°C) degrees
  */
-float WeatherStation::thermometer_c() {
+float WeatherStation::thermometer() {
   if(!BME280_ENABLED) {
     return 0;
   }
-  return bme_sensor.temp(BME280::TempUnit_Celcius);
-}
-
-/*
- * Return the temperature in Fahrenheit (°F) degrees
- */
-float WeatherStation::thermometer_f() {
-  if(!BME280_ENABLED) {
-    return 0;
-  }
-  return bme_sensor.temp(BME280::TempUnit_Fahrenheit);
+  return bme_sensor.readTemperature();
 }
 
 /*
  * Return the dew point in Celsius (°C) degrees
  */
-float WeatherStation::dew_point_c() {
+float WeatherStation::dew_point() {
   if(!BME280_ENABLED) {
     return 0;
   }
-  float temp = bme_sensor.temp(BME280::TempUnit_Celcius);
-  float hum = bme_sensor.hum();
-  return EnvironmentCalculations::DewPoint(temp, hum, true);
-}
-
-/*
- * Return the dew point in Fahrenheit (°F) degrees
- */
-float WeatherStation::dew_point_f() {
-  if(!BME280_ENABLED) {
-    return 0;
-  }
-  float temp = bme_sensor.temp(BME280::TempUnit_Fahrenheit);
-  float hum = bme_sensor.hum();
-  return EnvironmentCalculations::DewPoint(temp, hum, false);
+  float temp = bme_sensor.readTemperature();
+  float hum = bme_sensor.readHumidity();
+  float k;
+  k = log(hum / 100) + (17.62 * temp) / (243.12 + temp);
+  return 243.12 * k / (17.62 - k);
 }
 
 /*
@@ -129,7 +109,7 @@ float WeatherStation::hygrometer() {
   if(!BME280_ENABLED) {
     return 0;
   }
-  return bme_sensor.hum();
+  return bme_sensor.readHumidity();
 }
 
 /*
@@ -139,27 +119,17 @@ float WeatherStation::atmospheric_pressure() {
   if(!BME280_ENABLED) {
     return 0;
   }
-  return bme_sensor.pres(BME280::PresUnit_hPa);
+  return bme_sensor.readPressure() / 100.0F;
 }
 
 /**
  *  \brief Return the altitude in meters (m)
  */
-float WeatherStation::altimeter_m() {
+float WeatherStation::altimeter() {
   if(!BME280_ENABLED) {
     return 0;
   }
-  return EnvironmentCalculations::Altitude(bme_sensor.pres(), true, BME280_SEA_LEVEL_PRESSURE);
-}
-
-/**
- *  \brief Return the altitude in feet (ft)
- */
-float WeatherStation::altimeter_ft() {
-  if(!BME280_ENABLED) {
-    return 0;
-  }
-  return EnvironmentCalculations::Altitude(bme_sensor.pres(), false, BME280_SEA_LEVEL_PRESSURE);
+  return bme_sensor.readAltitude(BME280_SEA_LEVEL_PRESSURE);
 }
 
 /*
@@ -200,5 +170,4 @@ float WeatherStation::rain_gauge() {
 void WeatherStation::anemometer_pulse() {
   anemometer_count++;
 }
-
 
