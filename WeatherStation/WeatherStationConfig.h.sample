@@ -30,7 +30,7 @@
   const bool BME280_ENABLED = false;
   const int BME280_SDA = 4; /* D2 */
   const int BME280_SCL = 5; /* D1 */
-  const float BME280_SEA_LEVEL_PRESSURE = 101325; // in Pa
+  const float BME280_SEA_LEVEL_PRESSURE = 1013.25;
 
   /* ================================================================================ */
 
@@ -62,17 +62,6 @@
 
   const bool RAIN_GAUGE_ENABLED = false;
   const int  RAIN_GAUGE_PIN = 0; /* D3 */
-
-  /* ================================================================================ */
-
-  /*
-  * Weather Underground settings
-  */
-
-  const bool WEATHER_UNDERGROUND_ENABLED = false;
-  const char* WEATHER_UNDERGROUND_URL = "https://weatherstation.wunderground.com/weatherstation/updateweatherstation.php";
-  const char* WEATHER_UNDERGROUND_ID = "ID";
-  const char* WEATHER_UNDERGROUND_PASSWORD = "PASSWORD";
 
 #endif
 
