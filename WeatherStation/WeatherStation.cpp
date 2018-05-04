@@ -144,7 +144,7 @@ float WeatherStation::anemometer() {
 }
 
 /*
- * Return the wind direction in degrees (Â°) : North at 0Â°
+ * Return the wind direction in degrees (°) : North at 0°
  */
 float WeatherStation::weathercock() {
   if(!WEATHERCOCK_ENABLED) {
